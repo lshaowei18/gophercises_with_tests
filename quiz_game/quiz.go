@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"os"
+	"strings"
+	"time"
 )
 
 type Sleeper interface {
@@ -46,8 +49,8 @@ func AskAQuestionAndCheck(slice []string, r io.Reader, score *int) {
 	//Ask user what is the answer
 	fmt.Printf("What is %s?\n", slice[0])
 	input := InputReader(r) //Get user answer
-	//add to score if user is correct
-	if input == slice[1] {
+	//add to score if user is correc
+	if strings.Contains(input, slice[1]) {
 		*score++
 	}
 }
@@ -59,5 +62,14 @@ func CreateResults(length, score int) string {
 func SleepAndTerminate(seconds int, sleeper Sleeper) {
 	for i := seconds; i > 0; i-- {
 		sleeper.Sleep()
+	}
+}
+
+//Shuffle given slice
+func ShuffleSlice(slice [][]string) {
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+	for n := len(slice); n > 0; n-- {
+		randIndex := r.Intn(n)
+		slice[n-1], slice[randIndex] = slice[randIndex], slice[n-1]
 	}
 }

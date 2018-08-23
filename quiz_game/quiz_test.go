@@ -74,3 +74,22 @@ func TestSleepAndTerminate(t *testing.T) {
 		t.Errorf("got %d, want %d", got, want)
 	}
 }
+
+func TestShuffleSlice(t *testing.T) {
+	slice := [][]string{
+		{"1"},
+		{"2"},
+		{"1"},
+		{"2"},
+		{"1"},
+		{"2"},
+		{"1"},
+		{"2"},
+	}
+	var want [][]string
+	copy(want, slice)
+	ShuffleSlice(slice)
+	if reflect.DeepEqual(want, slice) {
+		t.Error("Both slices should not be the same.")
+	}
+}

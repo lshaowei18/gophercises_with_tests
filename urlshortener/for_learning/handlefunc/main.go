@@ -1,27 +1,28 @@
 package main
 
+//Follow this guide for now https://www.alexedwards.net/blog/making-and-using-middleware
+
 import (
-	"fmt"
-	"io"
+	"log"
 	"net/http"
-	"reflect"
 )
 
-func d(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "dog dog dog")
+func main() {
+	http.Handle("/", middleware(messageHandler("/")))
+	http.ListenAndServe(":8080", nil)
 }
 
-func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", d)
-	fmt.Println(mux)
-	mux1 := http.NewServeMux()
-	mux1.HandleFunc("/", d)
-	fmt.Println(mux1)
-	x := reflect.ValueOf(mux)
-	y := reflect.ValueOf(mux1)
-	fmt.Printf("%T\n", x)
-	fmt.Println(x)
-	fmt.Println(reflect.DeepEqual(x, y))
-	http.ListenAndServe(":8080", mux)
+func messageHandler(message string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(message))
+	})
+}
+
+func middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//Middleware logic goes here
+		log.Println("Executing Middleware")
+		next.ServeHTTP(w, r)
+		log.Println("Executing middleware one again")
+	})
 }

@@ -2,9 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{.Title}</title>
+    <title>{{.Title}}</title>
 </head>
 <body>
 <h1>{{.Title}}</h1>
+<ul>
+  {{range .Story}}
+  <li> {{.}} </li>
+  {{end}}
+</ul>
+<ul>
+  {{range .Options}}
+  <p>{{.Text}}</p>
+  <a href={{.Link}}>Lets Go!</a>
+  {{end}}
+</ul>
 </body>
 </html>

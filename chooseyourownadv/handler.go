@@ -25,6 +25,7 @@ type Chapter struct {
 	Options []struct {
 		Text string `json:"text"`
 		Arc  string `json:"arc"`
+		Link string
 	} `json:"options"`
 }
 
@@ -49,10 +50,20 @@ func (chapter Chapter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (chapter *Chapter) AddLinks(port string) {
+	for i, option := range chapter.Options {
+		fmt.Println(option.Arc)
+		chapter.Options[i].Link = fmt.Sprintf("%s", option.Arc)
+	}
+}
+
 func NewStoryMux(story map[string]Chapter) *http.ServeMux {
 	mux := http.NewServeMux()
-	a := story["home"]
-	fmt.Println(a)
-	mux.Handle("/", a)
+	for key, chapter := range story {
+		//Add the links to the chapters
+		chapter.AddLinks(Host)
+		url := fmt.Sprintf("/%s", key)
+		mux.Handle(url, chapter)
+	}
 	return mux
 }
